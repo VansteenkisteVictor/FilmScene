@@ -7,8 +7,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MovieApp.Data;
+using MovieApp.Repositories;
 
 namespace MovieApp
 {
@@ -33,10 +36,18 @@ namespace MovieApp
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<MovieDBContext>(options => options.UseSqlServer(connectionString));
+
+            //registratie repositories
+            services.AddScoped<IMovies_SQL, Movies_SQL>(); //laatste wordt uitgvoerd
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+
+
         {
             if (env.IsDevelopment())
             {
@@ -57,7 +68,7 @@ namespace MovieApp
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Movie}/{action=Index}/{id?}");
             });
         }
     }

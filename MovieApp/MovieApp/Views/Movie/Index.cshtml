@@ -1,0 +1,11 @@
+﻿@model IEnumerable<MovieApp.Models.MovieSearch>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Movies</h1>
+@foreach (var item in Model)
+{
+    <img src="@Html.DisplayFor(modelItem => item.Poster)"/>
+    <p>@Html.DisplayFor(modelItem => item.Title)</p>
+}
