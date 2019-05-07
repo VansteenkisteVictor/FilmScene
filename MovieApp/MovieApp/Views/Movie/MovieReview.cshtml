@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewData["Title"] = "MovieReview";
+}
+
+<h1>MovieReview</h1>
+<form action="Index" method="post">
+    <p>Name</p>
+    <input type="text" name="name"/>
+    <p>Comment</p>
+    <input type="text" name="comment"/>
+    <p>Score</p>
+    <input type="range" min="0" max="5" value="0" name="score"/>
+    <button type="submit">Add review</button>
+</form>
+

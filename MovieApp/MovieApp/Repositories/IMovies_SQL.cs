@@ -8,6 +8,7 @@ namespace MovieApp.Repositories
     {
         Task Delete(int id);
         Task<IEnumerable<MovieSearch>> GetAllMoviesAsync();
+        Task<MovieDetail> GetMovieDetailAsync(string id);
         Task<MovieSearch> Update(MovieSearch student);
     }
 }

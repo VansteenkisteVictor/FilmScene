@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace MovieApp.Models
+namespace Review_API.Models
 {
     public class MovieDetail
     {
@@ -20,8 +21,8 @@ namespace MovieApp.Models
         public string Awards { get; set; }
         public string Poster { get; set; }
         public Rating[] Ratings { get; set; }
-        public string Metascore { get; set; }
-        public string imdbRating { get; set; }
+        public int Metascore { get; set; }
+        public decimal imdbRating { get; set; }
         public string imdbVotes { get; set; }
         public string imdbID { get; set; }
         public string Type { get; set; }

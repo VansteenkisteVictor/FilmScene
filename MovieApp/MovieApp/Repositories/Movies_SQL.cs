@@ -46,6 +46,28 @@ namespace MovieApp.Repositories
 
         }
 
+        public async Task<MovieDetail> GetMovieDetailAsync(string id)
+        {
+            MovieDetail detail = new MovieDetail();
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                //1. SQL query
+                string sql = "SELECT * FROM Movies WHERE imdbID = @Id";
+                SqlCommand cmd = new SqlCommand(sql, con)
+                {
+                    CommandType = System.Data.CommandType.Text,
+                };
+                cmd.Parameters.AddWithValue("@Id", id);
+                //2. Data ophalen
+                con.Open();
+                SqlDataReader reader = await cmd.ExecuteReaderAsync();
+                detail = (await GetData2(reader))[0];
+                con.Close();
+            }
+            return detail;
+
+        }
+
         //SQL helpers --------------------------------------------------
         private async Task<List<MovieSearch>> GetData(SqlDataReader reader)
         {
@@ -63,6 +85,40 @@ namespace MovieApp.Repositories
                     s.Type = !Convert.IsDBNull(reader["Search_Type"]) ? (string)reader["Search_Type"] : "";
                     s.Poster = !Convert.IsDBNull(reader["Search_Poster"]) ? (string)reader["Search_Poster"] : "";
                     lst.Add(s);
+                }
+            }
+            catch (Exception exc)
+            {
+                Console.Write(exc.Message); //later loggen
+            }
+            finally
+            {
+                reader.Close();  //Niet vergeten. Beperkt aantal verbindingen (of kosten)
+            }
+            return lst;
+        }
+
+        private async Task<List<MovieDetail>> GetData2(SqlDataReader reader)
+        {
+            List<MovieDetail> lst = new List<MovieDetail>();
+            //1. try catch verhindert applicatie crash
+            try
+            {
+                while (await reader.ReadAsync())
+                {
+                    MovieDetail s = new MovieDetail();
+
+                    s.Title = !Convert.IsDBNull(reader["Title"]) ? (string)reader["Title"] : "";
+                    s.Year = Convert.ToInt32(reader["Year"]);
+                    s.Rated = !Convert.IsDBNull(reader["Rated"]) ? (string)reader["Rated"] : "";
+                    s.Poster = !Convert.IsDBNull(reader["Poster"]) ? (string)reader["Poster"] : "";
+                    s.Runtime = !Convert.IsDBNull(reader["Runtime"]) ? (string)reader["Runtime"] : "";
+                    s.Genre = !Convert.IsDBNull(reader["Genre"]) ? (string)reader["Genre"] : "";
+                    s.Writer = !Convert.IsDBNull(reader["Writer"]) ? (string)reader["Writer"] : "";
+                    s.Actors = !Convert.IsDBNull(reader["Director"]) ? (string)reader["Director"] : "";
+                    s.Plot = !Convert.IsDBNull(reader["Plot"]) ? (string)reader["Plot"] : "";
+
+
                 }
             }
             catch (Exception exc)
