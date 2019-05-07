@@ -28,15 +28,18 @@ namespace MovieApp.Controllers
         public async Task<IActionResult> Index(string name = null, string comment = null, int score = 0,string username = null,string password = null, string password2 = null)
         {
             string MovieID = HttpContext.Session.GetString("MovieID");
-
+            
             if (name != null && MovieID != null)
             {
+                string Username = HttpContext.Session.GetString("LoggedIn");
                 ReviewTask_RA review = new ReviewTask_RA();
                 review.Id = new Guid();
                 review.Name = name;
                 review.Comment = comment;
                 review.Score = score;
                 review.MovieId = MovieID;
+                Login login = await movies_HTTP.Login(Username);
+                review.UserId = login.Id.ToString();
                 await movies_HTTP.PostReview(review);
             }
 
@@ -52,10 +55,6 @@ namespace MovieApp.Controllers
             {
                 return RedirectToAction(nameof(Login));
             }
-            
-
-            //var movies = await movies_SQL.GetAllMoviesAsync();
-            //return View(movies);
         }
 
         public async Task<IActionResult> MovieDetail(string id)
@@ -75,6 +74,7 @@ namespace MovieApp.Controllers
                 {
                     return NotFound();
                 }
+                HttpContext.Session.SetString("MovieID", movie_detail.imdbID);
                 return View(movie_detail);
             }
             else
@@ -100,7 +100,7 @@ namespace MovieApp.Controllers
                         register.Salt = PassSalt.Item2;
                         await movies_HTTP.Register(register);
 
-                        HttpContext.Session.SetString("LoggedIn", register.Id.ToString());
+                        HttpContext.Session.SetString("LoggedIn", register.Username.ToString());
 
                     }
                 }
@@ -113,11 +113,9 @@ namespace MovieApp.Controllers
                 {
                     Login login = await movies_HTTP.Login(username);
                     byte[] salt = login.Salt;
-                    string passwordtest = PasswordWithSalt(password, salt);
-                    string passwordtest2 = PasswordWithSalt(password, salt);
                     if (login.Password == PasswordWithSalt(password, salt) )
                     {
-                        HttpContext.Session.SetString("LoggedIn", login.Id.ToString());
+                        HttpContext.Session.SetString("LoggedIn", login.Username.ToString());
                     }
                 }
             }
@@ -181,7 +179,7 @@ namespace MovieApp.Controllers
                     return NotFound();
                 }
 
-                var movie_reviews = await //NOW DOING
+                var movie_reviews = await movies_HTTP.OnGetReview(id);
                 if (movie_reviews == null)
                 {
                     return NotFound();
@@ -234,6 +232,7 @@ namespace MovieApp.Controllers
 
         }
 
+
         public async Task<IActionResult> Register()
         {
             HttpContext.Session.SetString("LoginRegisterValue", "Register");
@@ -255,6 +254,122 @@ namespace MovieApp.Controllers
             }
 
         }
+
+        public async Task<IActionResult> MyMovie()
+        {
+
+            string LoggedIn = HttpContext.Session.GetString("LoggedIn");
+
+            if (LoggedIn != null)
+            {
+                Login login = await movies_HTTP.Login(LoggedIn);
+                var review = await movies_HTTP.OnGetReviewUser(login.Id.ToString());
+                List<MovieDetail> reviewed_movies = new List<MovieDetail>();
+                for (int i = 0; i < review.Count(); i++)
+                {
+                    MovieDetail movies = await movies_HTTP.OnGetDetail(review.ElementAt(i).MovieId);
+                    reviewed_movies.Add(movies);
+                }
+                BigViewModel bigViewModel = new BigViewModel();
+                bigViewModel.MovieDetail = reviewed_movies;
+                bigViewModel.ReviewTask_RA = review;
+                return View(bigViewModel);
+            }
+            else
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MyMovies(IFormCollection collection)
+        {
+            try
+            {
+
+                return RedirectToAction(nameof(MyMovies));
+            }
+            catch
+            {
+                return View();
+            }
+
+        }
+
+        public async Task<IActionResult> Delete(string id)
+        {
+
+            string LoggedIn = HttpContext.Session.GetString("LoggedIn");
+
+            if (LoggedIn != null)
+            {
+                await movies_HTTP.Delete(id);
+                return RedirectToAction(nameof(MyMovie));
+            }
+            else
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            string LoggedIn = HttpContext.Session.GetString("LoggedIn");
+            if (LoggedIn != null)
+            {
+                HttpContext.Session.Remove("LoggedIn");
+                return RedirectToAction(nameof(Login));
+            }
+            else
+            {
+                return RedirectToAction(nameof(Login));
+            }
+        }
+
+        public async Task<IActionResult> Update(string id,int number,string comment,string score)
+        {       
+            string LoggedIn = HttpContext.Session.GetString("LoggedIn");
+
+
+            if (LoggedIn != null)
+            {
+                string Number_review = HttpContext.Session.GetString("Number_review");
+                if (Number_review != null)
+                {
+                    number = int.Parse(Number_review);
+                }
+                IEnumerable<ReviewTask_RA> review = await movies_HTTP.OnGetReviewUser(id);
+                ReviewTask_RA reviewElement = review.ElementAt(number);
+
+                if (comment != null)
+                {
+                    ReviewTask_RA newReviewElement = new ReviewTask_RA();
+                    newReviewElement.Id = reviewElement.Id;
+                    newReviewElement.Name = reviewElement.Name;
+                    newReviewElement.Comment = comment;
+                    newReviewElement.Score = int.Parse(score);
+                    newReviewElement.UserId = reviewElement.UserId;
+                    newReviewElement.MovieId = reviewElement.MovieId;
+
+                    await movies_HTTP.Update(newReviewElement);
+                    return RedirectToAction(nameof(MyMovie));
+                }
+                HttpContext.Session.SetString("Number_review", number.ToString());
+
+                return View(reviewElement);
+            }
+            else
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+        }
+
+
+
 
         public static (string,byte[]) Password(string password)
         {

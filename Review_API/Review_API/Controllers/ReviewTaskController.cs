@@ -30,11 +30,30 @@ namespace Review_API.Controllers
             return reviews;
         }
 
+        [HttpGet("userreview/{id}")]
+        public async Task<IEnumerable<ReviewTask_RA>> GetUserReview(string id)
+        {
+            var reviews = await this.dataProvider.GetAllReviewsASyncByUser(id);
+            return reviews;
+        }
+
 
         [HttpPost]
         public async Task Add([FromBody]ReviewTask_RA review)
         {
             await this.dataProvider.Add(review);
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task Delete(string id)
+        {
+            await this.dataProvider.Delete(id);
+        }
+
+        [HttpPut("change")]
+        public async Task Update([FromBody]ReviewTask_RA review)
+        {
+            await this.dataProvider.UpdateReview(review);
         }
     }
 }

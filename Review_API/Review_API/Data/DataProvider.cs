@@ -51,6 +51,36 @@ namespace Review_API.Data
 
         }
 
+        public async Task<IEnumerable<ReviewTask_RA>> GetAllReviewsASyncByUser(string UserId)
+        {
+            List<ReviewTask_RA> lst = new List<ReviewTask_RA>();
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    //1. SQL query
+                    string sql = "SELECT * FROM Review WHERE Review.UserId = @Id";
+                    SqlCommand cmd = new SqlCommand(sql, con)
+                    {
+                        CommandType = System.Data.CommandType.Text,
+                    };
+                    cmd.Parameters.AddWithValue("@Id", UserId);
+                    //2. Data ophalen
+                    con.Open();
+                    SqlDataReader reader = await cmd.ExecuteReaderAsync();
+                    lst = await GetData(reader);
+                    con.Close();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+            }
+            return lst;
+
+        }
+
         public async Task<IEnumerable<MovieSearch>> GetAllMoviesAsync()
         {
             List<MovieSearch> lst = new List<MovieSearch>();
@@ -69,17 +99,36 @@ namespace Review_API.Data
 
         }
 
+        public async Task Delete(string id)
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                //1. SQL query
+                string sql = "DELETE FROM Review WHERE Review.Id = @Id";
+                SqlCommand cmd = new SqlCommand(sql, con)
+                {
+                    CommandType = System.Data.CommandType.Text,
+                };
+                cmd.Parameters.AddWithValue("@Id", id);
+                //2. Data ophalen
+                con.Open();
+                SqlDataReader reader = await cmd.ExecuteReaderAsync();
+                con.Close();
+            }
+        }
+
         public async Task<ReviewTask_RA> Add(ReviewTask_RA review)
         {
             using (SqlConnection con = new SqlConnection(connectionString))
             { //TO DO: Gender, DateOfBirth, Password
-                string SQL = "Insert into Review(Id, Name, Comment, Score, MovieId)"; SQL += " Values(@Id, @Name, @Comment, @Score, @MovieId)";
+                string SQL = "Insert into Review(Id, Name, Comment, Score, MovieId, UserId)"; SQL += " Values(@Id, @Name, @Comment, @Score, @MovieId, @UserId)";
                 SqlCommand cmd = new SqlCommand(SQL, con);
                 cmd.Parameters.AddWithValue("@Id", Guid.NewGuid());
                 cmd.Parameters.AddWithValue("@Name", review.Name);
                 cmd.Parameters.AddWithValue("@Comment", review.Comment ?? ""); //EducationId is NULLABLE! int?
                 cmd.Parameters.AddWithValue("@Score", review.Score);
                 cmd.Parameters.AddWithValue("@MovieId", review.MovieId);
+                cmd.Parameters.AddWithValue("@UserId", review.UserId);
                 con.Open();
                 await cmd.ExecuteNonQueryAsync(); //enkel uitvoeren, geen reader
                 con.Close();
@@ -100,6 +149,29 @@ namespace Review_API.Data
                 con.Open();
                 await cmd.ExecuteNonQueryAsync(); //enkel uitvoeren, geen reader
                 con.Close();
+            }
+        }
+
+        public async Task UpdateReview(ReviewTask_RA review)
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            { //TO DO: Gender, DateOfBirth, Password
+                try
+                {
+                    string SQL = "UPDATE Review SET Comment = @Comment, Score = @Score WHERE UserId = @UserId";
+                    SqlCommand cmd = new SqlCommand(SQL, con);
+                    cmd.Parameters.AddWithValue("@Comment", review.Comment);
+                    cmd.Parameters.AddWithValue("@Score", review.Score);
+                    cmd.Parameters.AddWithValue("@UserId", review.UserId);
+                    con.Open();
+                    await cmd.ExecuteNonQueryAsync(); //enkel uitvoeren, geen reader
+                    con.Close();
+                }
+                catch(Exception ex)
+                {
+                    throw ex;
+                }
+
             }
         }
 
@@ -148,7 +220,6 @@ namespace Review_API.Data
         }
 
 
-
         private async Task<List<ReviewTask_RA>> GetData(SqlDataReader reader)
         {
             List<ReviewTask_RA> lst = new List<ReviewTask_RA>();
@@ -159,10 +230,12 @@ namespace Review_API.Data
                 {
                     ReviewTask_RA s = new ReviewTask_RA();
 
+                    s.Id = (Guid)reader["Id"];
                     s.Name = !Convert.IsDBNull(reader["Name"]) ? (string)reader["Name"] : "";
                     s.Comment = !Convert.IsDBNull(reader["Comment"]) ? (string)reader["Comment"] : "";
                     s.Score = Convert.ToInt32(reader["Score"]);
                     s.MovieId = !Convert.IsDBNull(reader["MovieId"]) ? (string)reader["MovieId"] : "";
+                    s.UserId = !Convert.IsDBNull(reader["UserId"]) ? (string)reader["UserId"] : "";
                     lst.Add(s);
                 }
             }
@@ -201,6 +274,8 @@ namespace Review_API.Data
             }
             return s;
         }
+
+
 
         private async Task<List<MovieSearch>> GetDataMovieSearch(SqlDataReader reader)
         {

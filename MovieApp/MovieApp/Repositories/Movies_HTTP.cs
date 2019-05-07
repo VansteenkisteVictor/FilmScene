@@ -102,6 +102,32 @@ namespace MovieApp.Repositories
 
         }
 
+        public async Task<IEnumerable<ReviewTask_RA>> OnGetReviewUser(string id)
+        {
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, $"https://localhost:44305/api/ReviewTask/userreview/{id}");
+                request.Headers.Add("Accept", "application/json");
+                request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
+
+                var client = _clientFactory.CreateClient();
+
+                var response = await client.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    MovieReviews = await response.Content
+                        .ReadAsAsync<IEnumerable<ReviewTask_RA>>();
+                }
+                return MovieReviews;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
         public async Task PostReview(ReviewTask_RA review)
         {
             try
@@ -122,6 +148,34 @@ namespace MovieApp.Repositories
             {
                 var client = _clientFactory.CreateClient();
                 var response = await client.PostAsync("https://localhost:44305/api/login", new StringContent(JsonConvert.SerializeObject(login), Encoding.UTF8, "application/json"));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        public async Task Delete(string id)
+        {
+            try
+            {
+                var client = _clientFactory.CreateClient();
+                var response = await client.DeleteAsync($"https://localhost:44305/api/ReviewTask/delete/{id}");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        public async Task Update(ReviewTask_RA review)
+        {
+            try
+            {
+                var client = _clientFactory.CreateClient();
+                var response = await client.PutAsync("https://localhost:44305/api/ReviewTask/change", new StringContent(JsonConvert.SerializeObject(review), Encoding.UTF8, "application/json"));
             }
             catch (Exception ex)
             {
