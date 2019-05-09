@@ -1,0 +1,55 @@
+﻿@model List<Microsoft.AspNetCore.Identity.IdentityUser>
+@{
+    ViewData["Title"] = "Users";
+}
+
+<h1>Users</h1>
+<table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ElementAt(0).UserName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ElementAt(0).Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ElementAt(0).EmailConfirmed)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ElementAt(0).PhoneNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ElementAt(0).PhoneNumberConfirmed)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @for (int i = 0; i < Model.Count(); i++)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => Model.ElementAt(i).UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => Model.ElementAt(i).Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => Model.ElementAt(i).EmailConfirmed)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => Model.ElementAt(i).PhoneNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => Model.ElementAt(i).PhoneNumberConfirmed)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("UserRoles", "UserRoles", "Admin", new { id = i })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>

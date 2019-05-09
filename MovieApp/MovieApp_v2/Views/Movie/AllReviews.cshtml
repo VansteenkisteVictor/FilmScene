@@ -1,0 +1,14 @@
+﻿@model IEnumerable<Models.ReviewTask_RA>
+@{
+    ViewData["Title"] = "AllReviews";
+}
+
+<h1>AllReviews</h1>
+@foreach (var item in Model)
+{
+    <h6>@Html.DisplayFor(modelItem => item.Name)</h6>
+    <p>@Html.DisplayFor(modelItem => item.Comment)</p>
+    <p>@Html.DisplayFor(modelItem => item.Score)</p>
+    <hr/>
+}
+

@@ -1,0 +1,30 @@
+﻿@model List<string>
+@{
+    ViewData["Title"] = "UserRoles";
+}
+
+<h1>UserRoles</h1>
+@Html.ActionLink("AddToAdmin", "AddToAdmin", "Admin")
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Role
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item)
+                        </td>
+                    </tr>
+             }
+
+            </tbody>
+
+    </table>
+
+

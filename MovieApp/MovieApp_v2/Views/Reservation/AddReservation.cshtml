@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewData["Title"] = "AddReservation";
+}
+
+<h1>AddReservation</h1>
+<form asp-action="AddReservation" method="post" asp-controller="Reservation">
+    <p>Location</p>
+    <input type="text" name="location"/>
+    <p>Date</p>
+    <input type="datetime-local" name="date"/>
+    <p>Amount</p>
+    <input type="number" name="amount"/>
+    <input type="submit" value="Reserve"/>
+</form>
+

@@ -1,0 +1,18 @@
+﻿@model Models.MovieDetail
+@{
+    ViewData["Title"] = "MovieDetail";
+}
+
+<img src="@Html.DisplayFor(model => model.Poster)" />
+<h1>@Html.DisplayFor(model => model.Title)</h1>
+<p>@Html.DisplayFor(model => model.Plot)</p>
+<hr />
+<p>IMDB rating</p>
+<p>@Html.DisplayFor(model => model.imdbRating)</p>
+<p>MetaScore</p>
+<p>@Html.DisplayFor(model => model.Metascore)</p>
+<p>Userrating</p>
+<p></p>
+<a asp-action="AllReviews" asp-route-id="@Model.imdbID"><button>All reviews</button></a>
+<a asp-action="MovieReview"><button>Add Review</button></a>
+<a asp-action="AddReservation" asp-controller="Reservation"><button>Reserve movie</button></a>
