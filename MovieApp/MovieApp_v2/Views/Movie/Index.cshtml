@@ -7,6 +7,7 @@
     .c-allMovies {
         display: flex;
         justify-content: flex-start;
+        flex-wrap: wrap;
     }
 
     .c-movie {
@@ -21,18 +22,21 @@
         max-height: 200px;
         margin: 5px;
     }
+    .c-movie_child {
+        flex: 1 0 21%;
+    }
 </style>
 
 <h1>Movies</h1>
-<div class=" c-allMovies">
+<div class="c-allMovies">
     @foreach (var item in Model)
     {
-        <div class="c-movie">
+        <div class="c-movie c-movie_child justify-content-center">
             <a asp-action="MovieDetail" asp-route-id="@item.imdbID">
                 <img class="c-movie__image" src="@Html.DisplayFor(modelItem => item.Poster)" />
                 <div>
                     <h6>@Html.DisplayFor(modelItem => item.Title)</h6>
-                    <p>@Html.DisplayFor(modelItem => item.Year)</p>
+                    <p>@Html.DisplayFor(modelItem => item.Year) | @Html.DisplayFor(modelItem => item.Type) </p>
                 </div>
             </a>
         </div>

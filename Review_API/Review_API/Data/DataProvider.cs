@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.Configuration;
+using Models;
 using Review_API.Models;
 using System;
 using System.Collections.Generic;
@@ -51,6 +52,92 @@ namespace Review_API.Data
 
         }
 
+        public async Task<IEnumerable<Reservation>> GetAllReservationsASync()
+        {
+            List<Reservation> lst = new List<Reservation>();
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    //1. SQL query
+                    string sql = "SELECT * FROM Reservation";
+                    SqlCommand cmd = new SqlCommand(sql, con);
+                    //2. Data ophalen
+                    con.Open();
+                    SqlDataReader reader = await cmd.ExecuteReaderAsync();
+                    lst = await ReservationData(reader);
+                    con.Close();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+            }
+            return lst;
+
+        }
+
+        public async Task<IEnumerable<Reservation>> GetUserReservationsASync(string id)
+        {
+            List<Reservation> lst = new List<Reservation>();
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    //1. SQL query
+                    string sql = "SELECT * FROM Reservation WHERE Reservation.UserId = @Id";
+                    SqlCommand cmd = new SqlCommand(sql, con)
+                    {
+                        CommandType = System.Data.CommandType.Text,
+                    };
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    //2. Data ophalen
+                    con.Open();
+                    SqlDataReader reader = await cmd.ExecuteReaderAsync();
+                    lst = await ReservationData(reader);
+                    con.Close();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+            }
+            return lst;
+
+        }
+
+        public async Task<Reservation> GetDetailReservation(string id)
+        {
+            List<Reservation> reservation = new List<Reservation>();
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    //1. SQL query
+                    string sql = "SELECT * FROM Reservation WHERE Reservation.Id = @Id";
+                    SqlCommand cmd = new SqlCommand(sql, con)
+                    {
+                        CommandType = System.Data.CommandType.Text,
+                    };
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    //2. Data ophalen
+                    con.Open();
+                    SqlDataReader reader = await cmd.ExecuteReaderAsync();
+                    reservation = await ReservationData(reader);
+                    con.Close();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+            }
+            return reservation.ElementAt(0);
+
+        }
+
         public async Task<IEnumerable<ReviewTask_RA>> GetAllReviewsASyncByUser(string UserId)
         {
             List<ReviewTask_RA> lst = new List<ReviewTask_RA>();
@@ -81,23 +168,6 @@ namespace Review_API.Data
 
         }
 
-        public async Task<IEnumerable<MovieSearch>> GetAllMoviesAsync()
-        {
-            List<MovieSearch> lst = new List<MovieSearch>();
-            using (SqlConnection con = new SqlConnection(connectionString))
-            {
-                //1. SQL query
-                string sql = "SELECT * FROM MovieSearch";
-                SqlCommand cmd = new SqlCommand(sql, con);
-                //2. Data ophalen
-                con.Open();
-                SqlDataReader reader = await cmd.ExecuteReaderAsync();
-                lst = await GetDataMovieSearch(reader);
-                con.Close();
-            }
-            return lst;
-
-        }
 
         public async Task Delete(string id)
         {
@@ -105,6 +175,25 @@ namespace Review_API.Data
             {
                 //1. SQL query
                 string sql = "DELETE FROM Review WHERE Review.Id = @Id";
+                SqlCommand cmd = new SqlCommand(sql, con)
+                {
+                    CommandType = System.Data.CommandType.Text,
+                };
+                cmd.Parameters.AddWithValue("@Id", id);
+                //2. Data ophalen
+                con.Open();
+                SqlDataReader reader = await cmd.ExecuteReaderAsync();
+                con.Close();
+            }
+        }
+
+
+        public async Task DeleteReservation(string id)
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                //1. SQL query
+                string sql = "DELETE FROM Reservation WHERE Reservation.Id = @Id";
                 SqlCommand cmd = new SqlCommand(sql, con)
                 {
                     CommandType = System.Data.CommandType.Text,
@@ -136,6 +225,26 @@ namespace Review_API.Data
             }
         }
 
+        public async Task<Reservation> AddReservation(Reservation reservation)
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            { //TO DO: Gender, DateOfBirth, Password
+                string SQL = "Insert into Reservation(Id, Email, Location, Date, Amount, MovieId, UserId)"; SQL += " Values(@Id, @Email, @Location, @Date, @Amount, @MovieId, @UserId)";
+                SqlCommand cmd = new SqlCommand(SQL, con);
+                cmd.Parameters.AddWithValue("@Id", Guid.NewGuid());
+                cmd.Parameters.AddWithValue("@Email", reservation.Email);
+                cmd.Parameters.AddWithValue("@Location", reservation.Location);
+                cmd.Parameters.AddWithValue("@Date", reservation.Date);
+                cmd.Parameters.AddWithValue("@Amount", reservation.Amount);
+                cmd.Parameters.AddWithValue("@MovieId", reservation.MovieId);
+                cmd.Parameters.AddWithValue("@UserId", reservation.UserId);
+                con.Open();
+                await cmd.ExecuteNonQueryAsync(); //enkel uitvoeren, geen reader
+                con.Close();
+                return reservation;
+            }
+        }
+
         public async Task AddLogin(Login login)
         {
             using (SqlConnection con = new SqlConnection(connectionString))
@@ -159,16 +268,42 @@ namespace Review_API.Data
             { //TO DO: Gender, DateOfBirth, Password
                 try
                 {
-                    string SQL = "UPDATE Review SET Comment = @Comment, Score = @Score WHERE UserId = @UserId";
+                    string SQL = "UPDATE Review SET Comment = @Comment, Score = @Score WHERE UserId = @UserId AND Id = @Id";
                     SqlCommand cmd = new SqlCommand(SQL, con);
                     cmd.Parameters.AddWithValue("@Comment", review.Comment);
                     cmd.Parameters.AddWithValue("@Score", review.Score);
                     cmd.Parameters.AddWithValue("@UserId", review.UserId);
+                    cmd.Parameters.AddWithValue("@Id", review.Id);
                     con.Open();
                     await cmd.ExecuteNonQueryAsync(); //enkel uitvoeren, geen reader
                     con.Close();
                 }
                 catch(Exception ex)
+                {
+                    throw ex;
+                }
+
+            }
+        }
+
+        public async Task UpdateReservation(Reservation reservation)
+        {
+            using (SqlConnection con = new SqlConnection(connectionString))
+            { //TO DO: Gender, DateOfBirth, Password
+                try
+                {
+                    string SQL = "UPDATE Reservation SET Location = @Location, Date = @Date, Amount = @Amount WHERE UserId = @UserId AND Id = @Id";
+                    SqlCommand cmd = new SqlCommand(SQL, con);
+                    cmd.Parameters.AddWithValue("@Location", reservation.Location);
+                    cmd.Parameters.AddWithValue("@Date", reservation.Date);
+                    cmd.Parameters.AddWithValue("@Amount", reservation.Amount);
+                    cmd.Parameters.AddWithValue("@UserId", reservation.UserId);
+                    cmd.Parameters.AddWithValue("@Id", reservation.Id);
+                    con.Open();
+                    await cmd.ExecuteNonQueryAsync(); //enkel uitvoeren, geen reader
+                    con.Close();
+                }
+                catch (Exception ex)
                 {
                     throw ex;
                 }
@@ -251,6 +386,38 @@ namespace Review_API.Data
             return lst;
         }
 
+        private async Task<List<Reservation>> ReservationData(SqlDataReader reader)
+        {
+            List<Reservation> lst = new List<Reservation>();
+            //1. try catch verhindert applicatie crash
+            try
+            {
+                while (await reader.ReadAsync())
+                {
+                    Reservation s = new Reservation();
+
+                    s.Id = (Guid)reader["Id"];
+                    s.Email = !Convert.IsDBNull(reader["Email"]) ? (string)reader["Email"] : "";
+                    s.Location = !Convert.IsDBNull(reader["Location"]) ? (string)reader["Location"] : "";
+                    s.Date = !Convert.IsDBNull(reader["Date"]) ? (string)reader["Date"] : "";
+                    s.Amount = Convert.ToInt32(reader["Amount"]);
+                    s.MovieId = !Convert.IsDBNull(reader["MovieId"]) ? (string)reader["MovieId"] : "";
+                    s.UserId = !Convert.IsDBNull(reader["UserId"]) ? (string)reader["UserId"] : "";
+                    lst.Add(s);
+                }
+            }
+            catch (Exception exc)
+            {
+                Console.Write(exc.Message); //later loggen
+            }
+            finally
+            {
+                reader.Close();  //Niet vergeten. Beperkt aantal verbindingen (of kosten)
+            }
+            return lst;
+        }
+
+
         private async Task<Login> GetLoginData(SqlDataReader reader)
         {
             Login s = new Login();
@@ -279,34 +446,7 @@ namespace Review_API.Data
 
 
 
-        private async Task<List<MovieSearch>> GetDataMovieSearch(SqlDataReader reader)
-        {
-            List<MovieSearch> lst = new List<MovieSearch>();
-            //1. try catch verhindert applicatie crash
-            try
-            {
-                while (await reader.ReadAsync())
-                {
-                    MovieSearch s = new MovieSearch();
-
-                    s.Title = !Convert.IsDBNull(reader["Search_Title"]) ? (string)reader["Search_Title"] : "";
-                    s.Year = Convert.ToInt32(reader["Search_Year"]);
-                    s.imdbID = !Convert.IsDBNull(reader["Search_imdbID"]) ? (string)reader["Search_imdbID"] : "";
-                    s.Type = !Convert.IsDBNull(reader["Search_Type"]) ? (string)reader["Search_Type"] : "";
-                    s.Poster = !Convert.IsDBNull(reader["Search_Poster"]) ? (string)reader["Search_Poster"] : "";
-                    lst.Add(s);
-                }
-            }
-            catch (Exception exc)
-            {
-                Console.Write(exc.Message); //later loggen
-            }
-            finally
-            {
-                reader.Close();  //Niet vergeten. Beperkt aantal verbindingen (of kosten)
-            }
-            return lst;
-        }
+        
 
         private async Task<List<MovieDetail>> GetDataMovieDetail(SqlDataReader reader)
         {
@@ -319,7 +459,7 @@ namespace Review_API.Data
                     MovieDetail s = new MovieDetail();
 
                     s.Title = !Convert.IsDBNull(reader["Title"]) ? (string)reader["Title"] : "";
-                    s.Year = Convert.ToInt32(reader["Year"]);
+                    s.Year = !Convert.IsDBNull(reader["Year"]) ? (string)reader["Year"] : "";
                     s.Rated = !Convert.IsDBNull(reader["Rated"]) ? (string)reader["Rated"] : "";
                     s.Poster = !Convert.IsDBNull(reader["Poster"]) ? (string)reader["Poster"] : "";
                     s.Runtime = !Convert.IsDBNull(reader["Runtime"]) ? (string)reader["Runtime"] : "";
@@ -329,7 +469,7 @@ namespace Review_API.Data
                     s.Plot = !Convert.IsDBNull(reader["Plot"]) ? (string)reader["Plot"] : "";
                     s.imdbID = !Convert.IsDBNull(reader["imdbID"]) ? (string)reader["imdbID"] : "";
                     s.imdbRating = Convert.ToDecimal(reader["imdbRating"]);
-                    s.Metascore = Convert.ToInt32(reader["Metascore"]); ;
+                    s.Metascore = !Convert.IsDBNull(reader["Metascore"]) ? (string)reader["Metascore"] : "";
                     lst.Add(s);
 
                 }

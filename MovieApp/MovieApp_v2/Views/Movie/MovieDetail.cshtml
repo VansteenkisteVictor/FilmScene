@@ -3,7 +3,15 @@
     ViewData["Title"] = "MovieDetail";
 }
 
-<img src="@Html.DisplayFor(model => model.Poster)" />
+<style>
+   .c-image{
+       max-height: 300px;
+   }
+</style>
+
+<div class="d-sm-flex justify-content-center">
+    <img src="@Html.DisplayFor(model => model.Poster)" class="img-thumbnail c-image"/>
+</div>
 <h1>@Html.DisplayFor(model => model.Title)</h1>
 <p>@Html.DisplayFor(model => model.Plot)</p>
 <hr />
@@ -11,8 +19,6 @@
 <p>@Html.DisplayFor(model => model.imdbRating)</p>
 <p>MetaScore</p>
 <p>@Html.DisplayFor(model => model.Metascore)</p>
-<p>Userrating</p>
-<p></p>
-<a asp-action="AllReviews" asp-route-id="@Model.imdbID"><button>All reviews</button></a>
-<a asp-action="MovieReview"><button>Add Review</button></a>
-<a asp-action="AddReservation" asp-controller="Reservation"><button>Reserve movie</button></a>
+<a asp-action="AllReviews" asp-route-id="@Model.imdbID"><button class="p-2 btn btn-primary ">All reviews</button></a>
+<a asp-action="MovieReview"><button class="p-2 btn btn-primary ">Add Review</button></a>
+<a asp-action="AddReservation" asp-controller="Reservation"><button class="p-2 btn btn-primary ">Reserve movie</button></a>

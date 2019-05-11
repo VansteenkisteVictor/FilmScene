@@ -4,21 +4,29 @@
     ViewData["Title"] = "MyMovie";
 }
 
-<h1>MyMovie</h1>
+<style>
+   .c-imagesize{
+       height: 250px;
+   }
+</style>
+
+<h1>My Reviews</h1>
 @for (int i = 0; i < Model.ReviewTask_RA.Count(); i++)
 {
-<div>
-    <img src="@Html.DisplayFor(Model => Model.MovieDetail[i].Poster)" />
-    <h3>@Html.DisplayFor(Model => Model.MovieDetail[i].Title)</h3>
-    <hr />
-    <h6>Comment</h6>
-    <p>@Html.DisplayFor(Model => Model.ReviewTask_RA.ElementAt(i).Comment)</p>
-    <h6>Score</h6>
-    <p>@Html.DisplayFor(Model => Model.ReviewTask_RA.ElementAt(i).Score)</p>
+<div class="d-flex m-1">
+    <img src="@Html.DisplayFor(Model => Model.MovieDetail[i].Poster)" class=" img-fluid img-thumbnail c-imagesize"/>
     <div>
-        <a asp-action="Delete" asp-route-id="@Model.ReviewTask_RA.ElementAt(i).Id">Delete</a>
-        <p>|</p>
-        <a asp-action="Update" asp-route-id="@Model.ReviewTask_RA.ElementAt(i).UserId" asp-route-number="@i" >Edit</a>
+        <h3>@Html.DisplayFor(Model => Model.MovieDetail[i].Title)</h3>
+        <hr />
+        <h6>Comment</h6>
+        <p>@Html.DisplayFor(Model => Model.ReviewTask_RA.ElementAt(i).Comment)</p>
+        <h6>Score</h6>
+        <p>@Html.DisplayFor(Model => Model.ReviewTask_RA.ElementAt(i).Score)</p>
+        <div class="d-flex">
+            <a asp-action="Delete" asp-route-id="@Model.ReviewTask_RA.ElementAt(i).Id">Delete</a>
+            <p>|</p>
+            <a asp-action="Update" asp-route-id="@Model.ReviewTask_RA.ElementAt(i).UserId" asp-route-number="@i">Edit</a>
+        </div>
     </div>
 </div>
 }

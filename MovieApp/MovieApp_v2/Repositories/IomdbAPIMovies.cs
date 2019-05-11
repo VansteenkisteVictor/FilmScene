@@ -9,6 +9,6 @@ namespace MovieApp_v2.Repositories
         MovieSearch Movies { get; }
 
         Task<MovieDetail> GetMovieDetail(string id);
-        Task<MovieSearch> GetMovies(string search);
+        Task<MovieSearch> GetMovies(string search, string type, string year);
     }
 }

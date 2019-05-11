@@ -4,21 +4,30 @@
     ViewData["Title"] = "MyReservation";
 }
 
-<h1>MyReservations</h1>
+<style>
+    .c-imagesize {
+        height: 250px;
+    }
+</style>
+
+
+<h1>My Reservations</h1>
 @for (int i = 0; i < Model.Reservation.Count(); i++)
 {
-    <div>
-        <img src="@Html.DisplayFor(Model => Model.MovieDetail[i].Poster)" />
-        <h3>@Html.DisplayFor(Model => Model.MovieDetail[i].Title)</h3>
-        <hr />
-        <h6>Location</h6>
-        <p>@Html.DisplayFor(Model => Model.Reservation.ElementAt(i).Location)</p>
-        <h6>Amount</h6>
-        <p>@Html.DisplayFor(Model => Model.Reservation.ElementAt(i).Amount)</p>
-        <h6>Date</h6>
-        <p>@Html.DisplayFor(Model => Model.Reservation.ElementAt(i).Date)</p>
-    <div>
-            <a asp-action="DeleteReservation" asp-route-id="@Model.Reservation.ElementAt(i).Id">Cancel</a>
+    <div class="d-flex m-1">
+        <img src="@Html.DisplayFor(Model => Model.MovieDetail[i].Poster)" class="img-fluid img-thumbnail c-imagesize" />
+        <div class="m-2">
+            <h3>@Html.DisplayFor(Model => Model.MovieDetail[i].Title)</h3>
+            <hr />
+            <h6>Location</h6>
+            <p>@Html.DisplayFor(Model => Model.Reservation.ElementAt(i).Location)</p>
+            <h6>Amount</h6>
+            <p>@Html.DisplayFor(Model => Model.Reservation.ElementAt(i).Amount)</p>
+            <h6>Date</h6>
+            <p>@Html.DisplayFor(Model => Model.Reservation.ElementAt(i).Date)</p>
+            <div>
+                <a asp-action="DeleteReservation" asp-route-id="@Model.Reservation.ElementAt(i).Id">Cancel</a>
+            </div>
         </div>
     </div>
 }

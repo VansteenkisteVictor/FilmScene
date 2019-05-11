@@ -1,16 +1,15 @@
-﻿
+﻿@model string
 @{
     ViewData["Title"] = "MovieReview";
 }
 
 <h1>MovieReview</h1>
-<form action="Search" method="post">
-    <p>Name</p>
-    <input type="text" name="name"/>
+<p>@Html.DisplayFor(Model => Model)</p>
+<form action="Search" method="post" class="form-group">
     <p>Comment</p>
-    <input type="text" name="comment"/>
+    <textarea class="form-control" type="text" name="comment"></textarea>
     <p>Score</p>
-    <input type="range" min="0" max="5" value="0" name="score"/>
-    <button type="submit">Add review</button>
+    <input type="range" class="custom-range" min="0" max="5" value="0" name="score"/>
+    <button type="submit" class="btn btn-primary">Add review</button>
 </form>
 

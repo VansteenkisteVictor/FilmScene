@@ -1,16 +1,19 @@
-﻿
+﻿@model string
+
+
 @{
     ViewData["Title"] = "AddReservation";
 }
 
 <h1>AddReservation</h1>
-<form asp-action="AddReservation" method="post" asp-controller="Reservation">
+<p>@Html.DisplayFor(Model => Model)</p>
+<form asp-action="AddReservation" method="post" asp-controller="Reservation" class="form-group">
     <p>Location</p>
-    <input type="text" name="location"/>
+    <input class="form-control" type="text" name="location"/>
     <p>Date</p>
-    <input type="datetime-local" name="date"/>
+    <input class="form-control" type="datetime-local" name="date"/>
     <p>Amount</p>
-    <input type="number" name="amount"/>
-    <input type="submit" value="Reserve"/>
+    <input class="form-control" type="number" name="amount"/>
+    <input type="submit" class="btn btn-primary mb-2" value="Reserve"/>
 </form>
 

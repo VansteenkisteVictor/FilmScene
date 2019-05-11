@@ -7,7 +7,7 @@ namespace Models
     public class MovieDetail
     {
         public string Title { get; set; }
-        public int Year { get; set; }
+        public string Year { get; set; }
         public string Rated { get; set; }
         public string Released { get; set; }
         public string Runtime { get; set; }

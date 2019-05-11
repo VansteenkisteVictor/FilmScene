@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 using Review_API.Data;
-using Review_API.Models;
 
 namespace Review_API.Controllers
 {

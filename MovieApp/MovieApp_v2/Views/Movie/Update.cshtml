@@ -4,10 +4,10 @@
 }
 
 <h1>Update</h1>
-<form asp-action="Update" asp-action-id="@Model.Id" method="post" >
+<form asp-action="Update" asp-action-id="@Model.Id" method="post" class="form-group" >
     <p>Comment</p>
-    <input type="text" name="comment" value="@Model.Comment"/>
+    <textarea class="form-control" type="text" name="comment">@Model.Comment</textarea>
     <p>Score</p>
-    <input type="range" min="0" max="5" value="@Model.Score" name="score" />
-    <button type="submit">Update review</button>
+    <input type="range" class="custom-range" min="0" max="5" value="@Model.Score" name="score" />
+    <button type="submit" class="btn btn-primary">Update review</button>
 </form>

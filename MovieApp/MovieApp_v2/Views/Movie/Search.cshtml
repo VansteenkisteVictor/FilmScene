@@ -1,11 +1,40 @@
-﻿
+﻿@model string
 @{
     ViewData["Title"] = "Search";
 }
 
-<h1>Search</h1>
-<form asp-action="Index" method="post">
-    <input type="text" name="search"/>
-    <input type="submit" value="Search"/>
+<style>
+    input{
+        margin: 10px;
+    }
+    input[type=submit]{
+        margin-top: 3em;
+    }
+    select{
+        margin: 10px;
+    }
+    .c-extrasearch{
+        margin: 20px 0;
+    }
+
+    .c-error {
+        color: red;
+    }
+</style>
+<h1 class="text-center">Search</h1>
+<p class="text-center c-error">@Html.DisplayFor(model => model)</p>
+<form asp-action="Index" method="post" class="d-flex flex-wrap justify-content-center flex-column">
+    <input type="text" name="search" class="input-group-text input-group" placeholder="Search for a movie" />
+    <div class="d-flex c-extrasearch">
+        <select name="type" class="custom-select">
+            <option></option>
+            <option>Movie</option>
+            <option>Serie</option>
+            <option>Episode</option>
+        </select>
+        <input type="number" name="year" class="input-group-text input-group" placeholder="Year" />
+    </div>
+    <input type="submit" value="Search" class="p-2 btn btn-primary" />
+
 </form>
 

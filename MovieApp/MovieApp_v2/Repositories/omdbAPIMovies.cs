@@ -17,11 +17,11 @@ namespace MovieApp_v2.Repositories
             _clientFactory = clientFactory;
             Console.Write(_clientFactory);
         }
-        public async Task<MovieSearch> GetMovies(string search)
+        public async Task<MovieSearch> GetMovies(string search,string type,string year)
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, $"http://www.omdbapi.com/?s={search}&apikey=9db84c18");
+                var request = new HttpRequestMessage(HttpMethod.Get, $"http://www.omdbapi.com/?s={search}&type={type}&y={year}&apikey=9db84c18");
                 request.Headers.Add("Accept", "application/json");
                 request.Headers.Add("User-Agent", "HttpClientFactory-Sample");
 

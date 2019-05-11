@@ -1,0 +1,16 @@
+﻿@model Models.Reservation
+@{
+    ViewData["Title"] = "UpdateReservation";
+}
+
+<h1>UpdateReservation</h1>
+<form asp-action="UpdateReservation" asp-controller="Admin" method="post" class="form-group">
+    <p>Location</p>
+    <input type="text" name="location" value="@Model.Location" class="form-control">
+    <p>Date</p>
+    <input type="datetime-local" name="date" value="@Model.Date" class="form-control"/>
+    <p>Amount</p>
+    <input type="number" name="amount" value="@Model.Amount"/>
+    <input type="submit" class="btn btn-primary"/>
+</form>
+
