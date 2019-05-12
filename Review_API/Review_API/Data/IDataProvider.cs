@@ -17,6 +17,7 @@ namespace Review_API.Data
         Task<Reservation> GetDetailReservation(string id);
         Task<Login> GetLogin(string Username);
         Task<MovieDetail> GetMovieDetailAsync(string id);
+        Task<ReviewTask_RA> GetReview(string Id);
         Task<IEnumerable<Reservation>> GetUserReservationsASync(string id);
         Task UpdateReservation(Reservation reservation);
         Task UpdateReview(ReviewTask_RA review);

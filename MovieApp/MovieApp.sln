@@ -9,7 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieApp_v2", "MovieApp_v2\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Review_API", "..\Review_API\Review_API\Review_API.csproj", "{1A104C9F-88B0-4DDB-A562-5A4F3DEBA393}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{70C871E6-4138-4119-8B71-5B0436F066E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing", "Testing\Testing.csproj", "{70C871E6-4138-4119-8B71-5B0436F066E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API_Testing", "API_Testing\API_Testing.csproj", "{16E5E043-28AC-454F-A10E-C5E610B6FAB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTest", "IntegrationTest\IntegrationTest.csproj", "{73B4CD34-C69A-463D-829C-26560592AA26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{70C871E6-4138-4119-8B71-5B0436F066E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70C871E6-4138-4119-8B71-5B0436F066E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70C871E6-4138-4119-8B71-5B0436F066E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16E5E043-28AC-454F-A10E-C5E610B6FAB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16E5E043-28AC-454F-A10E-C5E610B6FAB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16E5E043-28AC-454F-A10E-C5E610B6FAB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16E5E043-28AC-454F-A10E-C5E610B6FAB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73B4CD34-C69A-463D-829C-26560592AA26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73B4CD34-C69A-463D-829C-26560592AA26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73B4CD34-C69A-463D-829C-26560592AA26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73B4CD34-C69A-463D-829C-26560592AA26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

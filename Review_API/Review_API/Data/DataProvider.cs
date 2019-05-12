@@ -52,6 +52,36 @@ namespace Review_API.Data
 
         }
 
+        public async Task<ReviewTask_RA> GetReview(string Id)
+        {
+            List<ReviewTask_RA> lst = new List<ReviewTask_RA>();
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    //1. SQL query
+                    string sql = "SELECT * FROM Review WHERE Review.Id = @Id";
+                    SqlCommand cmd = new SqlCommand(sql, con)
+                    {
+                        CommandType = System.Data.CommandType.Text,
+                    };
+                    cmd.Parameters.AddWithValue("@Id", Id);
+                    //2. Data ophalen
+                    con.Open();
+                    SqlDataReader reader = await cmd.ExecuteReaderAsync();
+                    lst = await GetData(reader);
+                    con.Close();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+            }
+            return lst.ElementAt(0);
+
+        }
+
         public async Task<IEnumerable<Reservation>> GetAllReservationsASync()
         {
             List<Reservation> lst = new List<Reservation>();
